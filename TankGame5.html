@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0 auto;
+        }
+    </style>
+    <script type="text/javascript" src="js/TankGame5.js"></script>
+</head>
+<body onkeydown="getComand()">
+
+    <canvas id="tankMap" width="800" height="500" style=" background-color:black;"></canvas>
+    <script type="text/javascript">
+
+            var canvas1 = document.getElementById("tankMap");
+            var cxt = canvas1.getContext("2d");
+
+        //heroBullets Array
+            var heroBullets = new Array();
+
+
+
+            var heroColor = ["#BA9658", " #FEF25E"]
+            //我的坦克hero，方向0向上；方向1向右；方向2向下；方向3向左
+            var hero = new Hero(200, 200, 0, 5, heroColor);
+            drawTank(hero);
+
+
+
+            var enemyColor = ["#00AA58", " #00F25E"]
+            //定义敌人的坦克，多少个？单个定义还是放在数组中？
+            var enemyTanks = new Array();
+            //先死后活，定三个，后面再放到数组里
+            for (var i = 0; i < 3; i++) {
+                //创建一个坦克
+                var enemyTank = new EnemyTank((i + 1) * 50, 0, 2, 8, enemyColor);
+                //把这个坦克放到数组里面去
+                enemyTanks[i] = enemyTank;
+                //画出坦克
+
+            }
+
+            //先调用一次，构建屏幕
+            flashTankMap();
+
+                //这是一个接受用户按键的函数
+            function getComand() {
+                var code = event.keyCode;
+                switch (code) {
+                    case 38://上
+                        hero.moveUp();
+                        break;
+                    case 39://右
+                        hero.moveRight();
+                        break;
+                    case 40://下
+                        hero.moveDown();
+                        break;
+                    case 37://左
+                        hero.moveLeft();
+                        break;
+                    case 32://shoot
+                        hero.shotEnemy();
+                        break;
+            }
+                //重新绘制所有的敌人的坦克，可以在这里写代码，但是这就不是面向对象思想了，干脆专门写一个函数专门用于定时刷新我们的画布（作战区域）
+                flashTankMap();
+            };
+
+            setInterval("flashTankMap()",100);
+
+
+            //专门写一个函数用来刷新我们的作战区，把要再作战区出现的元素，自己的坦克，敌人的坦克，双方子弹，炸弹，草坪，障碍物，重新绘制
+            function flashTankMap() {
+                //游戏的思想
+                //西安清理画布
+                cxt.clearRect(0, 0, 800, 500);
+                //我的坦克
+                drawTank(hero);
+
+                drawHeroBullet();
+
+                //画出敌人的所有坦克
+                for (var i = 0; i < 3; i++) {
+                    drawTank(enemyTanks[i]);
+                }
+            }
+
+    </script>
+    <span id="span"></span>
+</body>
+</html>
